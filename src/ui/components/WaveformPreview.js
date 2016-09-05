@@ -57,14 +57,14 @@ export default class WaveformPreview extends Component {
 
             a.getFloatFrequencyData(this.dataArr);
 
-            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-
-            for (let i = 0; i < a.frequencyBinCount; i++) {
-                const height = (this.dataArr[i] + 140) * 2;
+            const squaresAcross = Math.ceil(this.width / 5);
+            for (let i = 0; i < squaresAcross; i++) {
+                const height = (this.dataArr[Math.floor(i / squaresAcross * a.frequencyBinCount)] + 140) * 2;
                 const numSquares = Math.floor(height / 255 * this.height / 5);
                 for (let y = 0; y < numSquares; y++) {
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${Math.floor((1 - y / numSquares * 0.6 - 0.2) * 8) / 8})`;
                     this.ctx.fillRect(
-                        i / a.frequencyBinCount * this.width,
+                        i * 5,
                         this.height - y * 5 - 1,
                         3,
                         3

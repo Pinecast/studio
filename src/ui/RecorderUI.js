@@ -1,6 +1,7 @@
 import React from 'react';
 
 import DevicePicker from './components/DevicePicker';
+import HeaderTimer from './components/HeaderTimer';
 import HeaderToolbar from './components/HeaderToolbar';
 import RecordButton from './components/RecordButton';
 import {Recorder} from './audio/inputCtx';
@@ -27,6 +28,7 @@ export default class RecorderUI extends React.Component {
     }
 
     startRecording() {
+        this.recorder.start(1); // 1 -> mono
         this.setState({recording: true});
     }
 
@@ -43,9 +45,21 @@ export default class RecorderUI extends React.Component {
 
     }
 
+    renderHeader() {
+        if (!this.state.recording) {
+            return null;
+        }
+
+        return [
+            <HeaderTimer key='timer' />
+        ];
+    }
+
     render() {
         return <main>
-            <HeaderToolbar />
+            <HeaderToolbar>
+                {this.renderHeader()}
+            </HeaderToolbar>
             <div style={styles.body}>
                 {this.renderCurrentState()}
             </div>

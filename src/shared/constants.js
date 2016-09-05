@@ -1,1 +1,1 @@
-export const BUFFER_SIZE = 2048;
+exports.BUFFER_SIZE = 2048;

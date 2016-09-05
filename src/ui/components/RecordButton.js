@@ -10,9 +10,9 @@ export default class RecordButton extends Component {
         };
 
         this.onMouseDown = () => this.setState({clicking: true});
-        this.onMouseOut = () => this.setState({hovering: false});
+        this.onMouseOut = () => this.setState({hovering: false, clicking: false});
         this.onMouseOver = () => this.setState({hovering: true});
-        this.onMouseUp = () => this.setState({clicking: false});
+        this.onMouseUp = () => this.setState({clicking: false, hovering: true});
     }
     render() {
         const {state: {clicking, hovering}, props: {onClick}} = this;

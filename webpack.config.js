@@ -40,6 +40,9 @@ module.exports = {
             if (request === 'electron') {
                 return callback(null, "require('" + request + "')");
             }
+            if (request.substr(0, 9) === 'external:') {
+                return callback(null, "require('" + request.substr(9) + "')");
+            }
             return callback();
         }
     ],

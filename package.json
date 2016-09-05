@@ -13,7 +13,8 @@
     "build": "webpack --config=webpack.config.js --progress",
     "build-electron": "electron-packager app.js $npm_package_productName --out=dist --ignore='^/dist$' --prune --asar --all --version=$npm_package_electronVersion",
     "dev": "webpack --config=webpack.config.js --progress --watch --colors",
-    "start": "npm run build && electron app.js"
+    "faststart": "electron app.js",
+    "start": "npm run build && npm run faststart"
   },
   "files": [
     "build/",

@@ -1,7 +1,14 @@
+import {Buffer} from 'external:buffer';
+import fs from 'external:fs';
 import {ipcRenderer} from 'electron';
+import path from 'external:path';
 
-import {BUFFER_SIZE} from '../../shared/constants';
 import {getAudioStream} from './getUserMedia';
+
+
+const BUFFER_SIZE = 2048;
+const tempDir = ipcRenderer.sendSync('electron-app-getPath', 'temp');
+console.log('Got temp dir ' + tempDir);
 
 
 let ctx = null;
@@ -39,6 +46,8 @@ export function getInputNode(deviceId = null) {
 };
 
 
+let buffId = 0;
+
 export class Recorder {
     constructor() {
         this.recorder = null;
@@ -47,10 +56,13 @@ export class Recorder {
 
         this.setupInputNode();
 
-        this.streams = [];
         this.streamLength = 0;
+        this.channelCount = 0;
 
         this.deviceId = null;
+
+        this.buffId = `${Date.now()}_${buffId++}`;
+        this.streams = null;
     }
 
     setDeviceId(deviceId) {
@@ -96,19 +108,29 @@ export class Recorder {
         }
 
         this.channelCount = channelCount;
+        this.bufferDir = path.join(
+            tempDir,
+            `ps_audiobuffer_${this.buffId}`
+        );
+        fs.mkdirSync(this.bufferDir);
+
+        this.streams = [];
         for (let i = 0; i < channelCount; i++) {
-            this.streams.push([]);
+            const streamPath = path.join(this.bufferDir, `channel${i}.pcm`);
+            const stream = fs.createWriteStream(streamPath);
+            this.streams.push(stream);
         }
 
         this.recorder = getContext().createScriptProcessor(BUFFER_SIZE, this.channelCount, this.channelCount);
         this.recorder.onaudioprocess = e => {
             for (let i = 0; i < this.channelCount; i++) {
-                this.streams[i].push(
-                    new Float32Array(e.inputBuffer.getChannelData(i))
-                );
+                // this.streams[i].write(Buffer.from(e.inputBuffer.getChannelData(i)));
             }
             this.streamLength += BUFFER_SIZE;
         };
+
+        this.inputNode.connect(this.recorder);
+        this.recorder.connect(getContext().destination);
     }
     stop() {
         this.inputNode.disconnect();
@@ -116,8 +138,13 @@ export class Recorder {
         this.inputNode = null;
         this.recorder = null;
 
-        return new Promise((resolve, reject) => {
-            //
-        });
+        const output = Promise.all(
+            this.streams.map(
+                stream => new Promise(res => stream.once('finish', res))
+            )
+        );
+        this.streams.forEach(s => s.end());
+        this.streams = null;
+        return output;
     }
 };

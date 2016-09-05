@@ -3,7 +3,7 @@ import React from 'react';
 import Logo from './Logo';
 
 
-const HeaderToolbar = () =>
+const HeaderToolbar = ({children = null}) =>
     <div style={{
         alignItems: 'center',
         background: '#151515',
@@ -12,6 +12,7 @@ const HeaderToolbar = () =>
         padding: '0 15px',
     }}>
         <Logo />
+        {children}
     </div>;
 
 export default HeaderToolbar;

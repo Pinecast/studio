@@ -1,6 +1,6 @@
 'use strict';
 const electron = require('electron');
-const app = electron.app;
+const {app, ipcMain} = electron;
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
@@ -14,7 +14,7 @@ function createMainWindow() {
         height: 400
     });
 
-    win.loadURL(`file://${__dirname}/src/ui/record/index.html`);
+    win.loadURL(`file://${__dirname}/src/ui/views/record.html`);
     win.on('closed', () => {
         mainWindow = null;
     });
@@ -35,5 +35,6 @@ app.on('ready', () => {
 });
 
 
-// Post-startup includes
-require('./bg/postStartup');
+ipcMain.on('electron-app-getPath', (e, type) => {
+    e.returnValue = app.getPath(type);
+});
