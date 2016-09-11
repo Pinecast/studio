@@ -1,4 +1,5 @@
 import {Buffer} from 'external:buffer';
+import {EventEmitter} from 'external:events';
 import fs from 'external:fs';
 import {ipcRenderer} from 'electron';
 import path from 'external:path';
@@ -62,7 +63,16 @@ export class Recorder {
         this.deviceId = null;
 
         this.buffId = `${Date.now()}_${buffId++}`;
+        this.streamPaths = null;
         this.streams = null;
+
+        this.bufferSize = BUFFER_SIZE;
+        this.sampleRate = getContext().sampleRate;
+
+        this.startedRecording = -1;
+        this.isRecording = false;
+
+        this.events = new EventEmitter();
     }
 
     setDeviceId(deviceId) {
@@ -114,29 +124,38 @@ export class Recorder {
         );
         fs.mkdirSync(this.bufferDir);
 
-        this.streams = [];
+        this.streamPaths = [];
         for (let i = 0; i < channelCount; i++) {
             const streamPath = path.join(this.bufferDir, `channel${i}.pcm`);
-            const stream = fs.createWriteStream(streamPath);
-            this.streams.push(stream);
+            this.streamPaths.push(streamPath);
         }
+        this.streams = this.streamPaths.map(p => fs.createWriteStream(p));
 
         this.recorder = getContext().createScriptProcessor(BUFFER_SIZE, this.channelCount, this.channelCount);
         this.recorder.onaudioprocess = e => {
+            const samples = [];
             for (let i = 0; i < this.channelCount; i++) {
-                // this.streams[i].write(Buffer.from(e.inputBuffer.getChannelData(i)));
+                samples[i] = Buffer.from(e.inputBuffer.getChannelData(i));
             }
+
+            samples.forEach((s, i) => this.streams[i].write(s));
+            this.events.emit('samples', this.streamLength, ...samples);
             this.streamLength += BUFFER_SIZE;
         };
 
         this.inputNode.connect(this.recorder);
         this.recorder.connect(getContext().destination);
+
+        this.startedRecording = Date.now();
+        this.isRecording = true;
+        this.events.emit('start');
     }
     stop() {
         this.inputNode.disconnect();
         this.recorder.disconnect();
         this.inputNode = null;
         this.recorder = null;
+        this.isRecording = false;
 
         const output = Promise.all(
             this.streams.map(
@@ -145,6 +164,8 @@ export class Recorder {
         );
         this.streams.forEach(s => s.end());
         this.streams = null;
+        this.events.emit('stopping');
+        output.then(() => this.events.emit('stopped'));
         return output;
     }
 };

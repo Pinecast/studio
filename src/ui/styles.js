@@ -14,11 +14,29 @@ export const fullButton = {
     width: '100%',
 };
 
-export const headerButton = {
-    ...button,
+const headerItem = {
     lineHeight: '18px',
     marginLeft: 30,
     position: 'relative',
+};
+export const headerButton = {
+    ...button,
+    ...headerItem,
+    padding: '0 10px',
+};
+export const headerLabel = {
+    ...headerItem,
+    border: '1px solid rgba(255, 255, 255, 0.6)',
+    borderRadius: 3,
+    color: '#ddd',
+    fontSize: '12px',
+    fontWeight: 100,
+    padding: '0 5px',
+};
+export const headerLabelEmphasis = {
+    color: '#fff',
+    fontStyle: 'normal',
+    fontWeight: 300,
 };
 
 export const label = {

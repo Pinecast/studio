@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
 import {getContext} from '../audio/inputCtx';
+import * as globalStyles from '../styles';
 import InputNumber from './elements/inputNumber';
 import Label from './elements/label';
-import * as globalStyles from '../styles';
 
 
 const styles = {

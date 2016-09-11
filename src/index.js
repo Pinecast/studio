@@ -1,3 +1,7 @@
+try {
+    require('external:electron-react-devtools').install();
+} catch (e) {}
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 

@@ -72,7 +72,8 @@ export default class WaveformPreview extends Component {
                 }
             }
 
-            this.cb = setTimeout(this.drawer, SAMPLE_RATE);
+            const duration = this.props.recorder.isRecording ? SAMPLE_RATE : 500;
+            this.cb = setTimeout(this.drawer, duration);
         });
     }
 
@@ -83,8 +84,10 @@ export default class WaveformPreview extends Component {
                 bottom: 0,
                 height: 400,
                 left: 0,
+                opacity: this.props.isDulled ? 0.2 : 1,
                 position: 'absolute',
                 right: 0,
+                transition: 'opacity 2s',
                 width: '100%',
                 zIndex: 0
             }}
