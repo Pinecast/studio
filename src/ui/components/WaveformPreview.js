@@ -9,7 +9,7 @@ export default class WaveformPreview extends Component {
         this.ctx = null;
         this.cb = null;
 
-        this.drawer = this.draw.bind(this);
+        this.draw = this.draw.bind(this);
 
         this.height = 0;
         this.width = 0;
@@ -45,7 +45,7 @@ export default class WaveformPreview extends Component {
         const ctx = canvas.getContext('2d');
         this.ctx = ctx;
 
-        this.cb = setTimeout(this.drawer, SAMPLE_RATE);
+        this.cb = setTimeout(this.draw, SAMPLE_RATE);
     }
 
     draw() {
@@ -72,8 +72,8 @@ export default class WaveformPreview extends Component {
                 }
             }
 
-            const duration = this.props.recorder.isRecording ? SAMPLE_RATE : 500;
-            this.cb = setTimeout(this.drawer, duration);
+            const duration = this.props.recorder.isRecording ? SAMPLE_RATE : SAMPLE_RATE * 1.6;
+            this.cb = setTimeout(this.draw, duration);
         });
     }
 
@@ -89,7 +89,7 @@ export default class WaveformPreview extends Component {
                 right: 0,
                 transition: 'opacity 2s',
                 width: '100%',
-                zIndex: 0
+                zIndex: 0,
             }}
         />;
     }

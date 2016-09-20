@@ -22,7 +22,7 @@ export default class HeaderStats extends Component {
             if (!recorder) {
                 return;
             }
-            this.setState({memoryUsage: recorder.streamLength});
+            this.setState({memoryUsage: recorder.streamLength * recorder.channelCount});
         }, 250);
     }
     componentWillUnmount() {

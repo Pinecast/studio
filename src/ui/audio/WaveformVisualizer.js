@@ -29,6 +29,7 @@ export class WaveformVisualizer {
         // TODO: This could probably be improved substantially with SIMD.js
 
         const rsEndIndex = calculateResampledSize(streamStartIndex + sampleSize, this.sampleRate, false);
+        let i = 0;
         for (
             let rsIndex = calculateResampledSize(streamStartIndex, this.sampleRate, false);
             rsIndex < rsEndIndex;
@@ -38,22 +39,23 @@ export class WaveformVisualizer {
             let posCnt = 0;
             let negCum = 0;
             let negCnt = 0;
-            let min = Infinity;
-            let max = -1 * Infinity;
-            for (let i = 0) {
+            // let min = Infinity;
+            // let max = -1 * Infinity;
+            const endIter = i + this.samplesPerResample;
+            for (; i < endIter; i++) {
                 const sample = blob[i];
                 if (sample > 0) {
                     posCum += sample;
                     posCnt++;
-                    if (sample > max) { // TODO: check that this is okay with else; just an optimization
-                        max = sample;
-                    }
+                    // if (sample > max) {
+                    //     max = sample;
+                    // }
                 } else {
                     negCum += sample;
                     negCnt++;
-                    if (sample < min) {
-                        min = sample;
-                    }
+                    // if (sample < min) {
+                    //     min = sample;
+                    // }
                 }
             }
 
@@ -115,7 +117,7 @@ function calculateResampledSize(audioLength, sampleRate, preallocate = true) {
 }
 
 function calculateOptimisticResampledSize(audioLength, sampleRate) {
-    const rss = calculateResampledSize(audioLength, sampleRate);
+    let rss = calculateResampledSize(audioLength, sampleRate);
     const overflow = rss % ONE_MINUTE_OF_SAMPLES;
     if (overflow > HALF_MINUTE_OF_SAMPLES) {
         rss += overflow;

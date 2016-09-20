@@ -9,6 +9,7 @@ import RecordButton from './components/RecordButton';
 import {Recorder} from './audio/inputCtx';
 import StopButton from './components/StopButton';
 import WaveformPreview from './components/WaveformPreview';
+import WaveformVisualizationPreview from './components/WaveformVisualizationPreview';
 
 
 const styles = {
@@ -55,6 +56,7 @@ export default class RecorderUI extends React.Component {
             return <div>
                 <BodyTimer recorder={this.recorder} />
                 <StopButton onClick={() => this.stopRecording()} />
+                <WaveformVisualizationPreview recorder={this.recorder} />
             </div>;
         }
 
