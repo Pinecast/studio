@@ -1,7 +1,16 @@
 {
+  "plugins": [
+    "check-es2015-constants",
+    "transform-es2015-modules-commonjs",
+    "syntax-trailing-function-commas",
+    "transform-async-to-generator",
+    "transform-exponentiation-operator",
+    "transform-class-properties",
+    "transform-decorators",
+    "transform-es2015-destructuring",
+    "transform-object-rest-spread"
+  ],
   "presets": [
-    "es2015",
-    "stage-2",
     "react"
   ]
 }
