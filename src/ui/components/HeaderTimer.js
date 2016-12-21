@@ -23,6 +23,7 @@ const styles = {
         padding: '5px 15px 15px',
         position: 'absolute',
         top: 'calc(100% + 5px)',
+        zIndex: 100,
     },
     wrapper: {
         position: 'relative',

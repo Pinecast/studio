@@ -133,6 +133,9 @@ export class Recorder {
 
         this.recorder = getContext().createScriptProcessor(BUFFER_SIZE, this.channelCount, this.channelCount);
         this.recorder.onaudioprocess = e => {
+            if (!this.isRecording) {
+                return;
+            }
             const samples = [];
             for (let i = 0; i < this.channelCount; i++) {
                 samples[i] = Buffer.from(e.inputBuffer.getChannelData(i));

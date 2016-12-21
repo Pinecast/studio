@@ -49,6 +49,8 @@ export default class WaveformVisualizationPreview extends Component {
     }
 
     draw() {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.strokeStyle = '#fff';
         this.wv.drawCanvas(this.ctx);
     }
 
