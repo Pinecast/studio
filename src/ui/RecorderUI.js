@@ -1,7 +1,9 @@
 import React from 'react';
 
 import BodyTimer from './components/BodyTimer';
+import BodyTimerDisplay from './components/BodyTimerDisplay';
 import DevicePicker from './components/DevicePicker';
+import ExportOptions from './components/ExportOptions';
 import HeaderStats from './components/HeaderStats';
 import HeaderTimer from './components/HeaderTimer';
 import HeaderToolbar from './components/HeaderToolbar';
@@ -37,8 +39,9 @@ export default class RecorderUI extends React.Component {
     }
 
     stopRecording() {
+        const stopper = this.recorder.stop();
         this.setState({step: 'flushing'}, () => {
-            this.recorder.stop().then(() => this.setState({step: 'saved'}));
+            stopper.then(() => this.setState({step: 'saved'}));
         });
     }
 
@@ -57,6 +60,43 @@ export default class RecorderUI extends React.Component {
                 <BodyTimer recorder={this.recorder} />
                 <StopButton onClick={() => this.stopRecording()} />
                 <WaveformVisualizationPreview recorder={this.recorder} />
+            </div>;
+        }
+        if (this.state.step === 'flushing') {
+            return <div>
+                <BodyTimerDisplay
+                    endTime={this.recorder.stoppedRecording}
+                    startTime={this.recorder.startedRecording}
+                />
+                <div
+                    style={{
+                        color: '#fff',
+                        fontSize: '40px',
+                        opacity: 0.5,
+                        textAlign: 'center',
+                    }}
+                >
+                    Saving backup...
+                </div>
+            </div>;
+        }
+        if (this.state.step === 'saved') {
+            return <div>
+                <BodyTimerDisplay
+                    endTime={this.recorder.stoppedRecording}
+                    startTime={this.recorder.startedRecording}
+                />
+                <div
+                    style={{
+                        color: '#fff',
+                        fontSize: '40px',
+                        opacity: 0.5,
+                        textAlign: 'center',
+                    }}
+                >
+                    Export audio as
+                </div>
+                <ExportOptions recorder={this.recorder} />
             </div>;
         }
 

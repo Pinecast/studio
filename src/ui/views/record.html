@@ -17,6 +17,7 @@
 
     body {
       font-family: -apple-system, 'Helvetica Neue', Helvetica, sans-serif;
+      font-weight: 300;
     }
 
     header {
@@ -36,7 +37,20 @@
       margin: 0;
       padding: 0;
     }
+
+    .device-problem-indicator div {
+      opacity: 0;
+      -webkit-pointer-events: none;
+      pointer-events: none;
+      top: -15px;
+    }
+    .device-problem-indicator:hover div {
+      opacity: 1;
+      top: -5px;
+    }
+
   </style>
+  <link href="fa-css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
   <main></main>

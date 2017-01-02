@@ -25,20 +25,8 @@ export function getSampleRate() {
     return getContext().sampleRate;
 };
 
-let input = null;
-let inputDeviceId = null;
-export function getInputNode(deviceId = null) {
-    if (input) {
-        if (inputDeviceId !== deviceId) {
-            input.then(n => n.disconnect);
-            input = null;
-            inputDeviceId = null;
-        } else {
-            return input;
-        }
-    }
-    inputDeviceId = deviceId;
-    return input = new Promise((resolve, reject) => {
+function getInputNode(deviceId = null) {
+    return new Promise((resolve, reject) => {
         const ctx = getContext();
         getAudioStream(deviceId).then(stream => {
             resolve(ctx.createMediaStreamSource(stream));
@@ -51,6 +39,7 @@ let buffId = 0;
 
 export class Recorder {
     constructor() {
+        this.audioSourceStream = null;
         this.recorder = null;
         this.inputNode = null;
         this.analyzer = null;
@@ -69,8 +58,9 @@ export class Recorder {
         this.bufferSize = BUFFER_SIZE;
         this.sampleRate = getContext().sampleRate;
 
-        this.startedRecording = -1;
-        this.isRecording = false;
+        this.startedRecording = null;
+        this.stoppedRecording = null;
+        this.isStopped = true;
 
         this.events = new EventEmitter();
     }
@@ -89,8 +79,14 @@ export class Recorder {
             this.inputNode.disconnect();
             this.inputNode = null;
         }
-        return getInputNode(this.deviceId).then(node => {
-            this.inputNode = node;
+
+        const ctx = getContext();
+        return new Promise((resolve, reject) => {
+            getAudioStream(this.deviceId).then(stream => {
+                this.audioSourceStream = stream;
+                this.inputNode = ctx.createMediaStreamSource(stream);
+                resolve(this.inputNode);
+            }, reject);
         });
     }
 
@@ -108,67 +104,104 @@ export class Recorder {
         return Promise.resolve(analyzer);
     }
 
+    startListening(inputChannels = 1, outputChannels = inputChannels, bufferSize = BUFFER_SIZE) {
+        if (this.recorder) {
+            throw new Error('Already listening');
+        }
+
+        if (!this.inputNode) {
+            this.setupInputNode().then(() => this.startListening(inputChannels, outputChannels));
+            return;
+        }
+
+        this.channelCount = outputChannels;
+        this.isStopped = false;
+
+        this.recorder = getContext().createScriptProcessor(bufferSize, inputChannels, outputChannels);
+        this.recorder.onaudioprocess = ({inputBuffer}) => {
+            if (this.isStopped) {
+                return;
+            }
+            const samples = new Array(outputChannels);
+            for (let i = 0; i < outputChannels; i++) {
+                samples[i] = inputBuffer.getChannelData(i);
+            }
+            this.events.emit('samples', this.streamLength, ...samples);
+            this.streamLength += bufferSize;
+        };
+
+        this.inputNode.connect(this.recorder);
+        this.recorder.connect(getContext().destination);
+    }
+
     start(channelCount = 1) {
         if (this.recorder) {
             throw new Error('Already recording');
         }
-        if (!this.inputNode) {
-            this.setupInputNode().then(() => this.start(channelCount));
-            return;
-        }
 
-        this.channelCount = channelCount;
         this.bufferDir = path.join(
             tempDir,
             `ps_audiobuffer_${this.buffId}`
         );
         fs.mkdirSync(this.bufferDir);
 
+        console.log(`Writing audio data to ${this.bufferDir}`);
+
         this.streamPaths = [];
         for (let i = 0; i < channelCount; i++) {
             const streamPath = path.join(this.bufferDir, `channel${i}.pcm`);
             this.streamPaths.push(streamPath);
         }
-        this.streams = this.streamPaths.map(p => fs.createWriteStream(p));
+        this.streams = this.getWriteStreams();
 
-        this.recorder = getContext().createScriptProcessor(BUFFER_SIZE, this.channelCount, this.channelCount);
-        this.recorder.onaudioprocess = e => {
-            if (!this.isRecording) {
-                return;
-            }
-            const samples = [];
-            for (let i = 0; i < this.channelCount; i++) {
-                samples[i] = Buffer.from(e.inputBuffer.getChannelData(i));
-            }
-
-            samples.forEach((s, i) => this.streams[i].write(s));
-            this.events.emit('samples', this.streamLength, ...samples);
-            this.streamLength += BUFFER_SIZE;
-        };
-
-        this.inputNode.connect(this.recorder);
-        this.recorder.connect(getContext().destination);
+        this.startListening(channelCount);
+        this.events.on('samples', (_, ...samples) => {
+            samples.forEach((s, i) => {
+                this.streams[i].write(Buffer.from(s.buffer));
+            });
+        });
 
         this.startedRecording = Date.now();
-        this.isRecording = true;
+        this.isStopped = false;
         this.events.emit('start');
     }
     stop() {
+        if (this.isStopped) {
+            return;
+        }
+
+        for (let track of this.audioSourceStream.getTracks()) {
+            this.audioSourceStream.removeTrack(track);
+        }
+
         this.inputNode.disconnect();
         this.recorder.disconnect();
         this.inputNode = null;
         this.recorder = null;
-        this.isRecording = false;
+        this.stoppedRecording = Date.now();
+
+        this.events.emit('stopping');
+        this.isStopped = true;
+
+        if (!this.streams) {
+            this.events.emit('stopped');
+            return Promise.resolve([]);
+        }
 
         const output = Promise.all(
-            this.streams.map(
-                stream => new Promise(res => stream.once('finish', res))
-            )
+            this.streams.map(s => new Promise(res => s.once('finish', res)))
         );
         this.streams.forEach(s => s.end());
         this.streams = null;
-        this.events.emit('stopping');
         output.then(() => this.events.emit('stopped'));
         return output;
+    }
+
+    getWriteStreams() {
+        return this.streamPaths.map(p => fs.createWriteStream(p));
+    }
+
+    getReadStreams() {
+        return this.streamPaths.map(p => fs.createReadStream(p));
     }
 };
