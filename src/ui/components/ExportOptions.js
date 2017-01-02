@@ -1,5 +1,6 @@
 import fs from 'external:fs';
 
+import encodeMp3 from '../audio/encoders/mp3';
 import encodeWAV from '../audio/encoders/wave';
 import {remote} from 'electron';
 const dialog = remote.dialog;
@@ -12,7 +13,7 @@ const titles = {
     wav: 'WAV',
 };
 const encoders = {
-    mp3: null,
+    mp3: encodeMp3,
     wav: encodeWAV,
 };
 
@@ -41,6 +42,7 @@ export default class ExportOptions extends Component {
                 s.once('error', reject);
             })
         )).then(() => {
+            // TODO: check that all of the channels are the same byte length
             return encoders[type](
                 recorder.streamLength,
                 inputStreams,
