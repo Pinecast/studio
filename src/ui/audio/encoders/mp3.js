@@ -4,7 +4,7 @@ import fs from 'external:fs';
 import {Mp3Encoder} from 'external:lamejs';
 
 
-const KBPS = 128;
+const KBPS = 192;
 
 
 export default function encode(sampleCount, streams, sampleRate, outputStream) {
