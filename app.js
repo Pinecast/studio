@@ -2,6 +2,8 @@
 const electron = require('electron');
 const {app, ipcMain} = electron;
 
+const os = require('os');
+
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
 
@@ -11,7 +13,8 @@ let mainWindow;
 function createMainWindow() {
     const win = new electron.BrowserWindow({
         width: 600,
-        height: 400
+        height: 400,
+        titleBarStyle: 'hidden-inset',
     });
 
     win.loadURL(`file://${__dirname}/src/ui/views/record.html`);

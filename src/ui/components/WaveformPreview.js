@@ -85,7 +85,7 @@ export default class WaveformPreview extends Component {
                 height: 400,
                 left: 0,
                 opacity: this.props.isDulled ? 0.2 : 1,
-                position: 'absolute',
+                position: 'fixed',
                 right: 0,
                 transition: 'opacity 2s',
                 width: '100%',
