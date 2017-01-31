@@ -1,6 +1,6 @@
-var path = require('path');
+const path = require('path');
 
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 
 module.exports = {
@@ -8,6 +8,13 @@ module.exports = {
     entry: {
         app: ['./src/index.js']
     },
+    resolve: {
+        mainFields: [
+            'jsnext:main',
+            'main',
+        ],
+    },
+    cache: false,
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: '/',
@@ -15,19 +22,19 @@ module.exports = {
     },
     plugins: [
         // new webpack.DefinePlugin({
-        //     'process.env': {
-        //         'NODE_ENV': '"production"',
-        //     },
+        //     'process.env.NODE_ENV': '"production"',
         // }),
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {warnings: false},
         //     mangle: {},
         //     sourceMap: false,
         // }),
-        new webpack.optimize.DedupePlugin(),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+        }),
     ],
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,

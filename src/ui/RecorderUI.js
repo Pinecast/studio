@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import BodyTimer from './components/BodyTimer';
 import BodyTimerDisplay from './components/BodyTimerDisplay';
@@ -23,11 +23,12 @@ const styles = {
     },
 };
 
-export default class RecorderUI extends React.Component {
+export default class RecorderUI extends Component {
     constructor(props) {
         super(props);
         this.state = {
             step: 'initial',
+            // step: 'saved',
         };
 
         this.recorder = new Recorder();

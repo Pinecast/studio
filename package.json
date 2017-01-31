@@ -27,7 +27,7 @@
     "editor"
   ],
   "dependencies": {
-    "electron": "^1.4.13",
+    "electron": "^1.4.15",
     "electron-debug": "^1.1.0",
     "file-size": "^1.0.0",
     "lamejs": "^1.1.0",
@@ -36,21 +36,19 @@
     "waveheader": "0.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
-    "babel-loader": "^6.2.5",
-    "babel-plugin-check-es2015-constants": "^6.8.0",
-    "babel-plugin-syntax-trailing-function-commas": "^6.13.0",
-    "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-plugin-transform-class-properties": "^6.11.5",
-    "babel-plugin-transform-decorators": "^6.13.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
-    "babel-plugin-transform-exponentiation-operator": "^6.8.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "babel-preset-react": "^6.11.1",
-    "electron-packager": "^8.4.0",
-    "electron-prebuilt": "^1.4.13",
+    "babel-cli": "^6.22.2",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-check-es2015-constants": "^6.22.0",
+    "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
+    "babel-plugin-transform-async-to-generator": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.22.0",
+    "babel-plugin-transform-decorators": "^6.22.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.22.0",
+    "babel-plugin-transform-exponentiation-operator": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
+    "electron-packager": "^8.5.1",
     "electron-react-devtools": "^0.4.0",
-    "webpack": "^1.13.2"
+    "webpack": "^2.2.1"
   }
 }
