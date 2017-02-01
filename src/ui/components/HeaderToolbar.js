@@ -6,7 +6,7 @@ import Logo from './Logo';
 
 
 function isMacOS() {
-    return os.platform() === 'darwin' && parseFloat(os.release().split('.')[0]) > 15;
+    return os.platform() === 'darwin' && parseFloat(os.release().split('.')[0]) >= 15;
 }
 
 

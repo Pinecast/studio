@@ -21,7 +21,7 @@ const styles = {
         flexDirection: 'column',
         height: '100%',
         justifyContent: 'center',
-        paddingBottom: 100,
+        overflowY: 'auto',
         position: 'relative',
         zIndex: 2,
     },
@@ -52,7 +52,7 @@ export default class RecorderUI extends Component {
 
     renderCurrentState() {
         if (this.state.step === 'initial') {
-            return <div>
+            return <div style={{maxHeight: '100%', paddingBottom: 100}}>
                 <DevicePicker
                     onChange={id => this.recorder.setDeviceId(id)}
                     style={{marginBottom: 40}}
