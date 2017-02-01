@@ -127,7 +127,7 @@ export class Recorder {
                 samples[i] = inputBuffer.getChannelData(i);
             }
             this.events.emit('samples', this.streamLength, ...samples);
-            this.streamLength += bufferSize;
+            this.streamLength += bufferSize / 2; // Divide by two because float32 -> int16 cuts size in half
         };
 
         this.inputNode.connect(this.recorder);
@@ -156,8 +156,13 @@ export class Recorder {
 
         this.startListening(channelCount);
         this.events.on('samples', (_, ...samples) => {
-            samples.forEach((s, i) => {
-                this.streams[i].write(Buffer.from(s.buffer));
+            samples.forEach((buffer, i) => {
+                const intChunk = new Int16Array(buffer.length);
+                for (let i = 0; i < buffer.length; i++) {
+                    const val = +Math.max(-1.0, +Math.min(1.0, +buffer[i]));
+                    intChunk[i] = val < 0 ? val * 32768 : val * 32767;
+                }
+                this.streams[i].write(Buffer.from(intChunk.buffer));
             });
         });
 

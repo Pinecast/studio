@@ -19,15 +19,7 @@ export default function encode(sampleCount, streams, sampleRate, outputStream) {
             if (chunk.length % 4 !== 0) {
                 console.warn(`Got unaligned chunk of size ${chunk.length}`);
             }
-            const pcmChunk = new Float32Array(chunk.buffer);
-            const wavChunk = new Int16Array(pcmChunk.length);
-            const chunkSize = pcmChunk.length;
-            for (let i = 0; i < chunkSize; i++) {
-                const val = Math.max(-1.0, Math.min(1.0, pcmChunk[i]));
-                wavChunk[i] = val < 0 ? val * 32768 : val * 32767;
-            }
-            const mp3Chunk = encoder.encodeBuffer(wavChunk);
-
+            const mp3Chunk = encoder.encodeBuffer(new Int16Array(chunk.buffer));
             outputStream.write(Buffer.from(mp3Chunk));
         });
         return new Promise((resolve, reject) => {

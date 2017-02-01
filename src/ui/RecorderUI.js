@@ -16,9 +16,13 @@ import WaveformVisualizationPreview from './components/WaveformVisualizationPrev
 
 const styles = {
     body: {
-        margin: '50px auto',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        justifyContent: 'center',
+        paddingBottom: 100,
         position: 'relative',
-        width: 300,
         zIndex: 2,
     },
 };
@@ -116,17 +120,17 @@ export default class RecorderUI extends Component {
 
     render() {
         const step = this.state.step;
-        return <main>
+        return <div>
             <HeaderToolbar>
                 {this.renderHeader()}
             </HeaderToolbar>
-            <div style={{...styles.body, width: step === 'initial' ? 300 : '100%'}}>
+            <section style={styles.body}>
                 {this.renderCurrentState()}
-            </div>
+            </section>
             <WaveformPreview
                 recorder={this.recorder}
                 isDulled={!(step === 'initial' || step === 'recording')}
             />
-        </main>;
+        </div>;
     }
 };
