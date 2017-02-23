@@ -79,7 +79,7 @@ export default class HeaderTimer extends Component {
                 osc.start(0);
 
             } else {
-                e.innerText = `${Math.floor(remaining / 3600)}:${('0' + Math.floor(remaining / 60)).slice(-2)}:${('0' + remaining % 60).slice(-2)}`;
+                e.innerText = `${Math.floor(remaining / 3600)}:${('0' + Math.floor((remaining / 60) % 60)).slice(-2)}:${('0' + remaining % 60).slice(-2)}`;
                 this.timer = setTimeout(timeout, 250);
             }
         };

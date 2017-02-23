@@ -41,7 +41,7 @@ export default class BodyTimerDisplay extends Component {
         const timeElapsed = endTime ? endTime - startTime : Date.now() - startTime;
 
         const elapsed = timeElapsed / 1000 | 0;
-        return `${Math.floor(elapsed / 3600)}:${('0' + Math.floor(elapsed / 60)).slice(-2)}:${('0' + elapsed % 60).slice(-2)}.${('00' + timeElapsed % 1000).slice(-3)}`
+        return `${Math.floor(elapsed / 3600)}:${('0' + Math.floor((elapsed / 60) % 60)).slice(-2)}:${('0' + elapsed % 60).slice(-2)}.${('00' + timeElapsed % 1000).slice(-3)}`
     }
 
     render() {
