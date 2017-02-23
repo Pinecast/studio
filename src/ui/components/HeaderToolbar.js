@@ -12,7 +12,7 @@ function isMacOS() {
 
 const HeaderToolbar = ({children = null, macOS = isMacOS()}) =>
     <div style={{
-        // WebkitAppRegion: 'drag',
+        WebkitAppRegion: 'drag',
 
         alignItems: 'center',
         background: '#151515',
