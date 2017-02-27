@@ -17,6 +17,10 @@ export default class DevicePicker extends Component {
         getDevices().then(devices => this.setState({devices, selected: devices[0].id}));
     }
 
+    get isSelectionOkay() {
+        return this.refs[`dpo_${this.state.selected}`].isOkay;
+    }
+
     render() {
         const {state: {devices, selected}, props: {onChange, style}} = this;
         if (!devices) {
@@ -35,6 +39,7 @@ export default class DevicePicker extends Component {
                         this.setState({selected: id});
                         onChange(id);
                     }}
+                    ref={`dpo_${id}`}
                     selected={selected}
                 />)}
         </div>;

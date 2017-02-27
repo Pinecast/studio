@@ -1,4 +1,14 @@
 export const button = {
+    appearance: 'none',
+    background: 'transparent',
+    border: '1px solid #fff',
+    borderRadius: 4,
+    color: '#fff',
+    fontFamily: '-apple-system, \'Helvetica Neue\', Helvetica, sans-serif',
+    fontSize: '1.25em',
+    padding: '15px 30px',
+};
+const baseButton = {
     background: 'transparent',
     border: '1px solid #fff',
     borderRadius: 3,
@@ -8,7 +18,7 @@ export const button = {
     padding: '0 10px',
 };
 export const fullButton = {
-    ...button,
+    ...baseButton,
     justifyContent: 'center',
     display: 'flex',
     width: '100%',
@@ -20,7 +30,7 @@ const headerItem = {
     position: 'relative',
 };
 export const headerButton = {
-    ...button,
+    ...baseButton,
     ...headerItem,
     padding: '0 10px',
 };

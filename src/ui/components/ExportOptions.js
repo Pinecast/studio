@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 
+import Button from './elements/button';
+
+
 const styles = {
     encodingOptionWrapper: {
         display: 'flex',
@@ -87,25 +90,14 @@ export default class ExportOptions extends Component {
                         padding: '30px 0',
                     }}
                 >
-                    <button
+                    <Button
                         onClick={e => {
                             e.preventDefault();
                             this.props.onSave(this.state.type);
                         }}
-                        style={{
-                            appearance: 'none',
-                            background: 'transparent',
-                            border: '1px solid #fff',
-                            borderRadius: 4,
-                            color: '#fff',
-                            fontFamily: '-apple-system, \'Helvetica Neue\', Helvetica, sans-serif',
-                            fontSize: '1.25em',
-                            padding: '15px 30px',
-                        }}
-                        type='button'
                     >
                         Save As...
-                    </button>
+                    </Button>
                 </div>}
         </form>;
     }

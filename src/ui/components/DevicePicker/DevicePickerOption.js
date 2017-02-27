@@ -53,6 +53,7 @@ export default class DevicePickerOption extends Component {
                     this.setState({fetching: false, outcome: 'silent'});
                 }
             }, 1000);
+            this.setState({fetching: listener})
         }, 250);
     }
 
@@ -61,9 +62,16 @@ export default class DevicePickerOption extends Component {
             clearTimeout(this.timeout);
         }
         if (this.recorder) {
+            if (typeof this.state.fetching === 'function') {
+                this.recorder.events.removeListener('samples', this.state.fetching);
+            }
             this.recorder.stop();
             this.recorder = null;
         }
+    }
+
+    get isOkay() {
+        return this.state.outcome === 'good';
     }
 
     render() {
