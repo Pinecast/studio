@@ -80,6 +80,8 @@ export default class Exporter extends Component {
             () => this.setState({readyState: 'finished', progress: 1}),
             error => this.setState({readyState: 'error', progress: 0, error})
         );
+
+        this.setState({readyState: 'encoding', progress: 0})
     }
 
     render() {
@@ -123,6 +125,11 @@ export default class Exporter extends Component {
 
 
         return <div>
+            <div style={styles.headerStyle}>
+                Uh-oh...
+            </div>
+            <p>There was a problem processing your export.</p>
+            <pre>{this.state.error.toString()}</pre>
         </div>;
     }
 };
