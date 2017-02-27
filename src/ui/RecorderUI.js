@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import BodyTimer from './components/BodyTimer';
 import BodyTimerDisplay from './components/BodyTimerDisplay';
 import DevicePicker from './components/DevicePicker';
-import ExportOptions from './components/ExportOptions';
+import Exporter from './components/Exporter';
 import HeaderStats from './components/HeaderStats';
 import HeaderTimer from './components/HeaderTimer';
 import HeaderToolbar from './components/HeaderToolbar';
@@ -101,7 +101,7 @@ export default class RecorderUI extends Component {
                 >
                     Export audio as
                 </div>
-                <ExportOptions recorder={this.recorder} />
+                <Exporter recorder={this.recorder} />
             </div>;
         }
 

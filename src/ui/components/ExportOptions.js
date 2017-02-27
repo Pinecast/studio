@@ -1,21 +1,4 @@
-import fs from 'external:fs';
-
-import Mp3Encoder from '../audio/encoders/mp3';
-import WaveEncoder from '../audio/encoders/wave';
-import {remote} from 'electron';
-const dialog = remote.dialog;
-
 import React, {Component} from 'react';
-
-
-const titles = {
-    mp3: 'MP3',
-    wav: 'WAV',
-};
-const encoders = {
-    mp3: Mp3Encoder,
-    wav: WaveEncoder,
-};
 
 const styles = {
     encodingOptionWrapper: {
@@ -47,43 +30,6 @@ export default class ExportOptions extends Component {
         this.state = {
             type: null,
         };
-    }
-
-    saveAs(type) {
-        const exportPath = dialog.showSaveDialog({
-            title: `Export Audio as ${titles[type]}`,
-            buttonLabel: 'Export',
-            filters: [
-                {
-                    name: titles[type],
-                    extensions: [type],
-                }
-            ],
-        });
-
-        if (!exportPath) {
-            // They clicked cancel
-            return;
-        }
-
-        const {recorder} = this.props;
-        const inputStreams = recorder.getReadStreams();
-        const outputStream = fs.createWriteStream(exportPath);
-        Promise.all(inputStreams.map(s =>
-            new Promise((resolve, reject) => {
-                s.once('readable', resolve);
-                s.once('error', reject);
-            })
-        )).then(() => {
-            // TODO: check that all of the channels are the same byte length
-            const encoder = new encoders[type]();
-            return encoder.encode(
-                recorder.streamLength,
-                inputStreams,
-                recorder.sampleRate,
-                outputStream
-            );
-        });
     }
 
     render() {
@@ -144,7 +90,7 @@ export default class ExportOptions extends Component {
                     <button
                         onClick={e => {
                             e.preventDefault();
-                            this.saveAs(this.state.type);
+                            this.props.onSave(this.state.type);
                         }}
                         style={{
                             appearance: 'none',
