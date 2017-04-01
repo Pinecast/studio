@@ -97,7 +97,7 @@ export default class Exporter extends Component {
                     startTime={recorder.startedRecording}
                 />
                 <div style={styles.headerStyle}>
-                    Export audio as
+                    Export To
                 </div>
                 <ExportOptions onSave={type => this.saveAs(type)} />
             </div>;

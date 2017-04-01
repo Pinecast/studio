@@ -8,6 +8,12 @@ export const button = {
     fontSize: '1.25em',
     padding: '15px 30px',
 };
+export const buttonPrimary = {
+    ...button,
+    background: '#D591F8',
+    border: 0,
+    color: '#000',
+};
 const baseButton = {
     background: 'transparent',
     border: '1px solid #fff',

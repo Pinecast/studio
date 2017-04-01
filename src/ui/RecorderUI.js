@@ -33,8 +33,8 @@ export default class RecorderUI extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 'initial',
-            // step: 'saved',
+            // step: 'initial',
+            step: 'saved',
         };
 
         this.recorder = new Recorder();
