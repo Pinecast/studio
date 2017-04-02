@@ -12,12 +12,17 @@ let mainWindow;
 
 function createMainWindow() {
     const win = new electron.BrowserWindow({
-        width: 600,
         height: 400,
         titleBarStyle: 'hidden-inset',
+        width: 600,
+
+        webPreferences: {
+            backgroundThrottling: false,
+        },
     });
 
     win.loadURL(`file://${__dirname}/src/ui/views/record.html`);
+    win.setTitle('Authorize Pinecast Studio')
     win.on('closed', () => {
         mainWindow = null;
     });
@@ -37,7 +42,4 @@ app.on('ready', () => {
     mainWindow = createMainWindow();
 });
 
-
-ipcMain.on('electron-app-getPath', (e, type) => {
-    e.returnValue = app.getPath(type);
-});
+require('./src/server/ipcMain').start(app);

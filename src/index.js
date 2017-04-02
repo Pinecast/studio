@@ -9,7 +9,7 @@ if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import RecorderUI from './ui/RecorderUI';
+import KeyContext from './ui/KeyContext';
 
 
-ReactDOM.render(<RecorderUI />, document.querySelector('main'));
+ReactDOM.render(<KeyContext />, document.querySelector('main'));

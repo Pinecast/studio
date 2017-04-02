@@ -18,7 +18,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: '/',
-        filename: '/build.js',
+        filename: 'build.js',
     },
     plugins: [
         // new webpack.DefinePlugin({

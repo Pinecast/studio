@@ -1,3 +1,4 @@
+import {ipcRenderer} from 'electron';
 import React, {Component} from 'react';
 
 import Button from '../elements/button';
@@ -29,6 +30,7 @@ export default class ExportOptionCloud extends Component {
             </p>
             <Button
                 className='cloud-connect-button'
+                onClick={() => ipcRenderer.send('pinecast-oauth-start')}
                 style={{fontSize: '13px'}}
                 type='primary'
             >
