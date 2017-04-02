@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 
 import Button from '../elements/button';
 import ExportOptionCloud from './ExportOptionCloud';
@@ -6,6 +6,10 @@ import {styles} from './styles';
 
 
 export default class ExportOptions extends Component {
+    static contextTypes = {
+        appKeys: PropTypes.object,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -14,13 +18,23 @@ export default class ExportOptions extends Component {
     }
 
     render() {
+        const {
+            context: {
+                appKeys: {
+                    'oauth.authToken.value': oauthToken,
+                },
+            },
+            state: {type}
+        } = this;
+
+        const hasSelection = type && (type === 'cloud' ? Boolean(oauthToken) : true);
         return <form
             onSubmit={e => e.preventDefault()}
             ref='form'
             style={styles.encodingOptionWrapper}
         >
             <label
-                className={`encoding-option ${this.state.type === 'wav' ? 'is-selected' : ''}`}
+                className={`encoding-option ${type === 'wav' ? 'is-selected' : ''}`}
                 style={styles.encodingOption}
             >
                 <span style={styles.encodingOptionHeader}>
@@ -40,7 +54,7 @@ export default class ExportOptions extends Component {
                 <i />
             </label>
             <label
-                className={`encoding-option ${this.state.type === 'mp3' ? 'is-selected' : ''}`}
+                className={`encoding-option ${type === 'mp3' ? 'is-selected' : ''}`}
                 style={styles.encodingOption}
             >
                 <span style={styles.encodingOptionHeader}>
@@ -60,10 +74,10 @@ export default class ExportOptions extends Component {
                 <i />
             </label>
             <ExportOptionCloud
-                selected={this.state.type === 'cloud'}
+                selected={type === 'cloud'}
                 onSelect={() => this.setState({type: 'cloud'})}
             />
-            {this.state.type &&
+            {hasSelection &&
                 <div
                     style={{
                         display: 'flex',
@@ -75,7 +89,7 @@ export default class ExportOptions extends Component {
                     <Button
                         onClick={e => {
                             e.preventDefault();
-                            this.props.onSave(this.state.type);
+                            this.props.onSave(type);
                         }}
                     >
                         Save As...

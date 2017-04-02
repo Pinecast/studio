@@ -21,11 +21,13 @@ export default class KeyContext extends Component {
     }
 
     componentDidMount() {
-        ipcRenderer.on('pinecast-got-api-keys', this.stateHandler);
+        ipcRenderer.on('pinecast-got-app-keys', this.stateHandler);
+        ipcRenderer.send('pinecast-watch-keys');
     }
 
     componentWillUnmount() {
-        ipcRenderer.removeListener('pinecast-got-api-keys', this.stateHandler);
+        ipcRenderer.removeListener('pinecast-got-app-keys', this.stateHandler);
+        ipcRenderer.send('pinecast-unwatch-keys');
     }
 
     getChildContext() {

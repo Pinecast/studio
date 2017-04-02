@@ -25,6 +25,7 @@ function startOAuthFlow() {
         oauthWindow = null;
     });
     oauthWindow.webContents.on('will-navigate', (e, url) => {
+        // TODO: do this check with the URL object below
         if (url.substr(0, constants.oauthInterceptURL.length) === constants.oauthInterceptURL) {
             oauthWindow.close();
 
